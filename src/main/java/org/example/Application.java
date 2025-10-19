@@ -13,17 +13,20 @@ import java.io.File;
 public class Application {
     public static void main(String[] args) {
         try {
-            // Create a server instance on port 8080
-            Server server = new Server(8080);
+            // Resolve port from environment (Render provides PORT)
+            int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+            // Resolve static web root; default to src/main/webapp
+            String defaultWebDir = new File("src/main/webapp").getAbsolutePath();
+            String webRoot = System.getenv().getOrDefault("WEBROOT", defaultWebDir);
+
+            // Create a server instance
+            Server server = new Server(port);
             
             // Create a resource handler for static content
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(false);
             resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-            
-            // Set the resource base to the webapp directory
-            String webDir = new File("src/main/webapp").getAbsolutePath();
-            resourceHandler.setResourceBase(webDir);
+            resourceHandler.setResourceBase(webRoot);
             
             // Create a context handler for the static content
             ContextHandler staticContext = new ContextHandler("/");
@@ -31,9 +34,7 @@ public class Application {
             
             // Create a servlet context handler for dynamic content
             ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            // Use root context so endpoint is /email
             servletContext.setContextPath("/");
-            // Register ContactServlet at /email
             servletContext.addServlet(new ServletHolder(new ContactServlet()), "/email");
             
             // Add all handlers to the server
@@ -44,7 +45,9 @@ public class Application {
             
             // Start the server
             server.start();
-            System.out.println("Server started on http://localhost:8080");
+            System.out.println("Server started on http://localhost:" + port);
+            System.out.println("Serving static files from: " + webRoot);
+            System.out.println("Endpoints: / (static), /email (POST)");
             System.out.println("Press Ctrl+C to stop the server");
             
             // Add shutdown hook for graceful shutdown
