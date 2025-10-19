@@ -72,6 +72,7 @@ img {
     letter-spacing: 1px;
     transition: var(--transition);
     text-align: center;
+    opacity: 1;
 }
 
 .btn:hover {

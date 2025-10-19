@@ -136,6 +136,7 @@
                     </div>
                 </div>
                 <form id="contactForm" class="contact-form">
+                    <input type="hidden" name="access_key" value="ad2697f4-f115-480c-9652-7e7822313d73">
                     <div class="form-group">
                         <input type="text" id="name" name="name" placeholder="Your Name" required>
                     </div>
@@ -148,7 +149,9 @@
                     <div class="form-group">
                         <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <div class="form-group">
+                    <button type="submit" class="btn">Send Message</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -197,5 +200,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
     <script src="js/main.js"></script>
+<!--    <script>-->
+<!--        const form = document.getElementById('contactForm');-->
+<!--        if (form) {-->
+<!--          form.addEventListener('submit', async (e) => {-->
+<!--            e.preventDefault();-->
+<!--            const payload = {-->
+<!--              name: document.getElementById('name').value,-->
+<!--              email: document.getElementById('email').value,-->
+<!--              subject: document.getElementById('subject').value,-->
+<!--              message: document.getElementById('message').value-->
+<!--            };-->
+<!--            const res = await fetch('/email', {-->
+<!--              method: 'POST',-->
+<!--              headers: {'Content-Type':'application/json'},-->
+<!--              body: JSON.stringify(payload)-->
+<!--            });-->
+<!--            const data = await res.json();-->
+<!--            alert(data.message || (res.ok ? 'Message sent!' : 'Failed to send'));-->
+<!--            if (res.ok) form.reset();-->
+<!--          });-->
+<!--        }-->
+<!--    </script>-->
+    <script>
+        const form = document.getElementById('contactForm');
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+              access_key: 'ad2697f4-f115-480c-9652-7e7822313d73',                // Web3Forms key
+              name: document.getElementById('name').value,
+              email: document.getElementById('email').value,
+              subject: document.getElementById('subject').value,
+              message: document.getElementById('message').value
+            };
+
+            try {
+              const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+              const data = await res.json();
+              if (data.success) {
+                alert('Message sent! Check your inbox.');
+                form.reset();
+              } else {
+                console.error(data);
+                alert(data.message || 'Failed to send. Try again.');
+              }
+            } catch (err) {
+              console.error(err);
+              alert('Network error. Please try again.');
+            }
+          });
+        }
+    </script>
 </body>
 </html>
