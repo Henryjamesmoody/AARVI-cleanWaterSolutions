@@ -130,11 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             opacity: 0, 
             duration: 0.8 
         }, '-=0.4')
-        .from('.btn', { 
-            y: 30, 
-            opacity: 0, 
-            duration: 0.8 
-        }, '-=0.4');
+
     
     // Animate elements on scroll
     const animateOnScroll = (elements, start = 'top 80%') => {

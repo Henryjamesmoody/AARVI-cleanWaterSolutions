@@ -31,8 +31,10 @@ public class Application {
             
             // Create a servlet context handler for dynamic content
             ServletContextHandler servletContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            servletContext.setContextPath("/api");
-            servletContext.addServlet(new ServletHolder(new ContactServlet()), "/contact");
+            // Use root context so endpoint is /email
+            servletContext.setContextPath("/");
+            // Register ContactServlet at /email
+            servletContext.addServlet(new ServletHolder(new ContactServlet()), "/email");
             
             // Add all handlers to the server
             HandlerList handlers = new HandlerList();
