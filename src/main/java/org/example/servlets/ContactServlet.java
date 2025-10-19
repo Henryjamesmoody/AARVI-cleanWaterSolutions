@@ -39,6 +39,7 @@ public class ContactServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setContentType("application/json");
 
+        //test
         // Create response map
         Map<String, Object> responseMap = new HashMap<>();
 
