@@ -21,6 +21,9 @@
 
 html {
     scroll-behavior: smooth;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -29,6 +32,9 @@ body {
     color: var(--text-color);
     background-color: var(--white);
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
 }
 
 .container {
@@ -36,6 +42,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    position: relative;
+    overflow: hidden;
 }
 
 a {
@@ -146,22 +154,14 @@ img {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
 /* Navigation */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    padding: 20px 0;
-    z-index: 1000;
-    transition: var(--transition);
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar.scrolled {
-    padding: 15px 0;
+    right: 0;
+    width: 100vw;
+    background-color: var(--white);
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
@@ -638,8 +638,8 @@ img {
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 20px;
+    right: 20px;
     width: 50px;
     height: 50px;
     background: var(--primary-color);
@@ -654,6 +654,12 @@ img {
     transition: var(--transition);
     z-index: 999;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .back-to-top.active {
@@ -681,6 +687,13 @@ img {
 @media (max-width: 768px) {
     .menu-toggle {
         display: block;
+    }
+
+    .back-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 70px; /* Position above mobile navigation */
+        right: 15px;
     }
     
     .nav-links {
@@ -738,6 +751,14 @@ img {
         font-size: 2rem;
     }
 
+    .back-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 20px;  /* Closer to the bottom on very small screens */
+        right: 15px;
+        font-size: 1rem;
+    }
+
       .navbar {
         transform: none !important;
         z-index: 1000;
@@ -776,6 +797,19 @@ img {
 
 /* iPhone Plus/Max widths (414px) and below */
 @media (max-width: 414px) {
+    html, body {
+        overflow-x: hidden;
+        position: relative;
+        width: 100%;
+    }
+
+    .back-to-top {
+        width: 40px;
+        height: 40px;
+        bottom: 20px;
+        right: 10px;
+        font-size: 1rem;
+    }
   /* Keep navbar always visible */
   .navbar {
     transform: none !important;
