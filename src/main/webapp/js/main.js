@@ -237,55 +237,115 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Load projects dynamically (in a real app, this would come from your backend)
-    const projectsGrid = document.querySelector('.projects-grid');
-    
+ const projectsGrid = document.querySelector('.projects-grid');
+
     if (projectsGrid) {
-        const projects = [
-            {
-                title: 'Industrial Water Treatment Plant',
-                description: 'Complete fabrication and installation for a large-scale industrial client',
-                image: 'images/project1.jpg'
-            },
-            {
-                title: 'Glass Reactor System',
-                'description': 'Custom glass works for chemical processing',
-                'image': 'images/project2.jpg'
-            },
-            {
-                'title': 'Waste Water Treatment',
-                'description': 'Eco-friendly solution for waste water management',
-                'image': 'images/project3.jpg'
-            },
-            {
-                'title': 'RO Plant Installation',
-                'description': 'Reverse osmosis system for clean water production',
-                'image': 'images/project4.jpg'
-            },
-            {
-                'title': 'Pipeline Network',
-                'description': 'Custom pipeline solutions for industrial applications',
-                'image': 'images/project5.jpg'
-            },
-            {
-                'title': 'Water Purification System',
-                'description': 'Advanced purification technology for clean drinking water',
-                'image': 'images/project6.jpg'
+        loadProjectsOptimized();
+    }
+
+    async function loadProjectsOptimized() {
+        // Show loading state
+        projectsGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Loading projects...</div>';
+
+        try {
+            // Try to load from API first with timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+
+            const response = await fetch('/api/projects', {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.projects && data.projects.length > 0) {
+                    renderProjects(data.projects);
+                    return;
+                }
             }
-        ];
-        
-        // Generate project cards
+        } catch (error) {
+            console.log('API not available, using default projects');
+        }
+
+        // Fallback to default projects with fast-loading placeholder images
+        renderProjects(getDefaultProjects());
+    }
+
+    function getDefaultProjects() {
+        return [
+                           {
+                               title: 'Industrial Structure',
+                               description: 'Complete fabrication and installation for a large-scale industrial client',
+                               image: 'images/project1.jpg'
+                           },
+                           {
+                               title: 'Making Heavy structure',
+                               'description': 'Specialized in the design, fabrication, and installation of heavy structural components for industrial and commercial projects',
+                               'image': 'images/project2.jpg'
+                           },
+                           {
+                               'title': 'Entrance Porch',
+                               'description': 'Designing & installing suitable / Attractive porch',
+                               'image': 'images/project3.jpg'
+                           },
+                           {
+                               'title': 'Industrial Shed Construction',
+                               'description': 'Making & installing heavy industrial shed',
+                               'image': 'images/project4.jpg'
+                           },
+                           {
+                               'title': 'PEB Work',
+                               'description': 'Constructing Pre Fabricated structure',
+                               'image': 'images/project5.jpg'
+                           },
+                           {
+                               'title': 'Stainless steel works',
+                               'description': 'Installing SS Railing for staircas ,walkways etc',
+                               'image': 'images/project6.jpg'
+                           }
+                       ];
+    }
+
+    function renderProjects(projects) {
         const projectsHTML = projects.map(project => `
             <div class="project-card">
                 <div class="project-image">
-                    <img src="${project.image}" alt="${project.title}">
+                    <img src="${project.image}"
+                         alt="${project.title}"
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/400x300/6c757d/ffffff?text=No+Image'">
                     <div class="project-overlay">
                         <h3>${project.title}</h3>
                         <p>${project.description}</p>
+                        ${project.client ? `<div class="project-meta" style="margin-top: 10px; font-size: 14px;"><strong>Client:</strong> ${project.client}</div>` : ''}
+                        ${project.location ? `<div class="project-meta" style="font-size: 14px;"><strong>Location:</strong> ${project.location}</div>` : ''}
+                        ${project.category ? `<div class="project-category" style="margin-top: 10px; padding: 4px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; font-size: 12px;">${project.category}</div>` : ''}
                     </div>
                 </div>
             </div>
         `).join('');
-        
+
         projectsGrid.innerHTML = projectsHTML;
+
+        // Re-trigger animations after content is loaded
+        setTimeout(() => {
+            if (typeof gsap !== 'undefined' && gsap.utils) {
+                gsap.utils.toArray('.project-card').forEach((card, i) => {
+                    gsap.from(card, {
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 50,
+                        opacity: 0,
+                        duration: 0.8,
+                        delay: i * 0.1,
+                        ease: 'power3.out'
+                    });
+                });
+            }
+        }, 100);
     }
 });

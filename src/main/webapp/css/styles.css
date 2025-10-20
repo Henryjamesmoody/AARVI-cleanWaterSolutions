@@ -456,9 +456,7 @@ img {
 
 .about-image {
     position: relative;
-    border-radius: var(--border-radius);
     overflow: hidden;
-    box-shadow: var(--box-shadow);
 }
 
 .about-image img {
